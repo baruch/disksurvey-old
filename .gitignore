@@ -3,3 +3,4 @@
 *.o
 .redo
 test/tur
+test/inq
