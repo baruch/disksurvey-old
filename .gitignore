@@ -1,0 +1,5 @@
+.*.swp
+*.a
+*.o
+.redo
+test/tur
