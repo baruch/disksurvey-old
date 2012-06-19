@@ -3,7 +3,7 @@
 #include <stdio.h>
 #include <ctype.h>
 
-void hexdump(char *buf, int buf_len)
+void hexdump(unsigned char *buf, int buf_len)
 {
 	int start_offset;
 	

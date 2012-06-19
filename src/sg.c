@@ -24,7 +24,7 @@ int sg_fd(sg_t *sg)
 	return sg->fd;
 }
 
-bool sg_submit(sg_t *sg, unsigned char *cdb, char cdb_len, int dxfer_dir, char *buf, unsigned int buf_len,
+bool sg_submit(sg_t *sg, unsigned char *cdb, char cdb_len, int dxfer_dir, void *buf, unsigned int buf_len,
               unsigned char *sense, char sense_len, unsigned int timeout, int pack_id,
               void *usr_ptr)
 {
