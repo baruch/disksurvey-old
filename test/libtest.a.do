@@ -1,3 +1,3 @@
 OBJ="lib.o"
 redo-ifchange $OBJ
-ar rs $3 $OBJ
+ar crs $3 $OBJ
