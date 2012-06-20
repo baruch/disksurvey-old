@@ -41,7 +41,7 @@ int main(int argc, const char **argv)
 		int device_type;
 		parse_inquiry(buf, sizeof(buf), &device_type, vendor, model, revision, serial);
 		if (device_type != TYPE_DISK)
-			printf("Device is not a disk, bad device!!!\n");
+			printf("Device is not a disk (%d), bad device!!!\n", device_type);
 		else
 			printf("Device is a disk, phew!\n");
 		printf("Vendor: '%s'\nModel: '%s'\nRevision: '%s'\nSerial: '%s'\n", vendor, model, revision, serial);
