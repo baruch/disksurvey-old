@@ -17,6 +17,18 @@ static inline void set_uint32(unsigned char *cdb, int start, uint32_t val)
 	cdb[start+3] = val & 0xFF;
 }
 
+static inline void set_uint64(unsigned char *cdb, int start, uint64_t val)
+{
+	cdb[start]   = (val >> 56) & 0xFF;
+	cdb[start+1] = (val >> 48) & 0xFF;
+	cdb[start+2] = (val >> 40) & 0xFF;
+	cdb[start+3] = (val >> 32) & 0xFF;
+	cdb[start+4] = (val >> 24) & 0xFF;
+	cdb[start+5] = (val >> 16) & 0xFF;
+	cdb[start+6] = (val >>  8) & 0xFF;
+	cdb[start+7] = val & 0xFF;
+}
+
 void cdb_tur(unsigned char *cdb)
 {
 	memset(cdb, 0, 6);
@@ -37,4 +49,22 @@ void cdb_read_capacity_16(unsigned char *cdb, uint32_t alloc_len)
 	cdb[0] = 0x9E;
 	cdb[1] = 0x10;
 	set_uint32(cdb, 10, alloc_len);
+}
+
+void cdb_read_16(unsigned char *cdb, uint64_t lba, uint32_t num_lbas, bool fua, bool dpo)
+{
+	memset(cdb, 0, 16);
+	cdb[0] = 0x88;
+	cdb[1] = dpo<<4 | fua<<3;
+	set_uint64(cdb, 2, lba);
+	set_uint32(cdb, 10, num_lbas);
+}
+
+void cdb_read_10(unsigned char *cdb, uint32_t lba, uint16_t num_lbas, bool fua, bool dpo)
+{
+	memset(cdb, 0, 10);
+	cdb[0] = 0x28;
+	cdb[1] = dpo<<4 | fua<<3;
+	set_uint32(cdb, 2, lba);
+	set_uint16(cdb, 7, num_lbas);
 }
