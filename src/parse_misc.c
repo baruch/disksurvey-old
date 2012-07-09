@@ -1,33 +1,8 @@
 #include "scsi.h"
+#include "parse.h"
 
 #include <string.h>
 #include <stdio.h>
-
-static inline uint32_t get_uint32(unsigned char *buf, int start)
-{
-	uint32_t val;
-	val = (uint32_t)buf[start]   << 24 |
-              (uint32_t)buf[start+1] << 16 |
-	      (uint32_t)buf[start+2] << 8  |
-	      (uint32_t)buf[start+3];
-	return val;
-}
-
-static inline uint64_t get_uint64(unsigned char *buf, int start)
-{
-	uint64_t val;
-
-	val = (uint64_t)buf[start]   << 56 |
-              (uint64_t)buf[start+1] << 48 |
-	      (uint64_t)buf[start+2] << 40 |
-	      (uint64_t)buf[start+3] << 32 |
-              (uint64_t)buf[start+4] << 24 |
-	      (uint64_t)buf[start+5] << 16 |
-	      (uint64_t)buf[start+6] <<  8 |
-	      (uint64_t)buf[start+7];
-
-	return val;
-}
 
 bool parse_inquiry(unsigned char *buf, unsigned buf_len, int *device_type, scsi_vendor_t vendor, scsi_model_t model, scsi_fw_revision_t revision, scsi_serial_t serial)
 {
@@ -83,5 +58,20 @@ bool parse_read_capacity_16(unsigned char *buf, unsigned buf_len, uint64_t *num_
 	*protection_type = (buf[12] >> 1) & 0x7;
 	*protection_enabled = buf[12] & 1;
 
+	return true;
+}
+
+bool parse_sense(unsigned char *buf, unsigned buf_len, bool *current, uint8_t *sense_key, uint8_t *asc, uint8_t *ascq)
+{
+	uint8_t resp_code = buf[0] & 0x7F;
+	*current = resp_code == 0x70 || resp_code == 0x72;
+	if (resp_code == 0x70 || resp_code == 0x71) {
+		*sense_key = buf[2] & 0xF;
+		*asc = buf[12];
+		*ascq = buf[13];
+	} else {
+		*sense_key = *asc = *ascq = 0xff;
+		return false;
+	}
 	return true;
 }

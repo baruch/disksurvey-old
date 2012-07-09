@@ -68,3 +68,32 @@ void cdb_read_10(unsigned char *cdb, uint32_t lba, uint16_t num_lbas, bool fua, 
 	set_uint32(cdb, 2, lba);
 	set_uint16(cdb, 7, num_lbas);
 }
+
+void cdb_log_sense(unsigned char *cdb, uint8_t page_code, uint8_t sub_page_code, uint16_t alloc_len)
+{
+	memset(cdb, 0, 10);
+	cdb[0] = 0x4D;
+	cdb[2] = page_code;
+	cdb[3] = sub_page_code;
+	set_uint16(cdb, 7, alloc_len);
+}
+
+void cdb_mode_sense_10(unsigned char *cdb, mode_llba_e llba, mode_dbd_e dbd, mode_pc_e pc, uint8_t page_code, uint8_t sub_page_code, uint16_t alloc_len)
+{
+	cdb[0] = 0x5A;
+	cdb[1] = llba << 4 | dbd << 3;
+	cdb[2] = (pc << 6) | (page_code & 0x3F);
+	cdb[3] = sub_page_code;
+	cdb[4] = cdb[5] = cdb[6] = 0;
+	set_uint16(cdb, 7, alloc_len);
+	cdb[9] = 0;
+}
+
+void cdb_receive_diagnostics(unsigned char *cdb, diag_pcv_e pcv, uint8_t page_code, uint16_t alloc_len)
+{
+	cdb[0] = 0x1C;
+	cdb[1] = pcv;
+	cdb[2] = page_code;
+	set_uint16(cdb, 3, alloc_len);
+	cdb[5] = 0;
+}

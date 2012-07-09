@@ -2,7 +2,11 @@
 .*.d
 *.a
 *.o
+*.xml
 .redo
 test/tur
 test/inq
+test/log_sense
 disk-scrub/disk-scrub
+disk-survey/disk-survey
+tags
