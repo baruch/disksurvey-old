@@ -63,6 +63,7 @@ int cdb_execute(sg_t *sg, unsigned char *cdb, size_t cdb_len, unsigned char *buf
 
 	if (hdr->status) {
 		fprintf(stderr, "Reply is an error: %d\n", hdr->status);
+		fprintf(stderr, "CDB: %s\n", hex_encode(cdb, cdb_len, 0));
 		fprintf(stderr, "Sense: %s\n", hex_encode(hdr->sbp, hdr->sb_len_wr, 0));
 		bool current;
 		uint8_t sense_key, asc, ascq;

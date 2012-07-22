@@ -1,6 +1,14 @@
 #ifndef _LIBSCSI_PARSE_H
 #define _LIBSCSI_PARSE_H
 
+static inline uint16_t get_uint16(unsigned char *buf, int start)
+{
+	uint16_t val;
+	val = (uint16_t)buf[start] << 8 |
+	      (uint16_t)buf[start+1];
+	return val;
+}
+
 static inline uint32_t get_uint32(unsigned char *buf, int start)
 {
 	uint32_t val;

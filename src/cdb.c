@@ -97,3 +97,11 @@ void cdb_receive_diagnostics(unsigned char *cdb, diag_pcv_e pcv, uint8_t page_co
 	set_uint16(cdb, 3, alloc_len);
 	cdb[5] = 0;
 }
+
+void cdb_report_timestamp(unsigned char *cdb, uint32_t alloc_len)
+{
+	memset(cdb, 0, 12);
+	cdb[0] = 0xA3;
+	cdb[1] = 0xF;
+	set_uint32(cdb, 6, alloc_len);
+}

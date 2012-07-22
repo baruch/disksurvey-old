@@ -71,7 +71,7 @@ int main(int argc, const char **argv)
 		bool prot_en;
 		parse_read_capacity_16(buf, sizeof(buf), &num_lbas, &block_size, &prot_type, &prot_en);
 		printf("Num LBAs: %llu\nBlock Size: %u\nProtection Type: %d\nProtection Enabled: %s\n",
-			num_lbas, block_size, prot_type, prot_en ? "Yes" : "No");
+			(unsigned long long)num_lbas, block_size, prot_type, prot_en ? "Yes" : "No");
 	}
 
 Exit:

@@ -125,7 +125,7 @@ static void progress_update(progress_t *progress, uint64_t current, uint64_t tot
 	double percent = fcur * 100.0 / ftotal;
 	double percent_per_sec = percent / (diff+1);
 	time_t time_to_100 = now + (time_t)((100.0 - percent) / percent_per_sec);
-	printf("\rProgress %3.1f%%: IOPS %3llu estimated end: %s\r", percent, iops, ctime(&time_to_100));
+	printf("\rProgress %3.1f%%: IOPS %3llu estimated end: %s\r", percent, (unsigned long long)iops, ctime(&time_to_100));
 	fflush(stdout);
 }
 
@@ -161,7 +161,7 @@ static void do_scrub(sg_t *sg, uint64_t num_blocks, uint32_t block_size)
 		case READ_OK: break;
 		case READ_ERROR: fprintf(stderr, "Error while reading data\n"); return;
 		case READ_MEDIUM_ERR:
-			fprintf(stderr, "Medium error reading at offset %llu\n", block_offset);
+			fprintf(stderr, "Medium error reading at offset %llu\n", (unsigned long long)block_offset);
 			break;
 		}
 	}
@@ -211,7 +211,7 @@ static void scrub_disk(const char *path)
 	       "\tNum blocks: %llu\n"
 	       "\tBlock size: %u\n"
 	       "\tSize: %llu GB\n"
-	       , vendor, model, revision, serial, num_blocks, block_size, num_blocks*block_size/1000/1000/1000);
+	       , vendor, model, revision, serial, (unsigned long long)num_blocks, block_size, (unsigned long long)num_blocks*block_size/1000/1000/1000);
 
 	do_scrub(&sg, num_blocks, block_size);
 

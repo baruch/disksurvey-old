@@ -75,3 +75,17 @@ bool parse_sense(unsigned char *buf, unsigned buf_len, bool *current, uint8_t *s
 	}
 	return true;
 }
+
+bool parse_report_timestamp(unsigned char *buf, unsigned buf_len, device_clock_e *dev_clock, uint64_t *ts_msec)
+{
+	if (buf_len < 10)
+		return false;
+
+	uint16_t data_len = get_uint16(buf, 0);
+	if (data_len != 0xA)
+		return false;
+
+	*dev_clock = buf[2] & 0x7;
+	*ts_msec = get_uint64(buf, 4);
+	return true;
+}

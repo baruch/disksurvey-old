@@ -46,7 +46,7 @@ static bool do_inquiry(sg_t *sg, scsi_vendor_t vendor, scsi_model_t model, scsi_
 	return parse_inquiry(inquiry_buf, sizeof(inquiry_buf), dev_type, vendor, model, revision, serial);
 }
 
-static void survey_disk_capacity(sg_t *sg, FILE *out)
+static void survey_disk_capacity(sg_t *sg, FILE *out, uint64_t *num_blocks, uint32_t *block_size)
 {
 	unsigned char cdb[16];
 	unsigned char buf[256];
@@ -59,17 +59,15 @@ static void survey_disk_capacity(sg_t *sg, FILE *out)
 
 	cdb_read_capacity_16(cdb, sizeof(buf));
 	if (cdb_execute(sg, cdb, 16, buf, sizeof(buf), sense, sizeof(sense), &hdr, out)) {
-		uint64_t num_blocks;
-		uint32_t block_size;
 		int prot_type;
 		bool prot_en;
-		parse_read_capacity_16(buf, sizeof(buf), &num_blocks, &block_size, &prot_type, &prot_en);
+		parse_read_capacity_16(buf, sizeof(buf), num_blocks, block_size, &prot_type, &prot_en);
 		fprintf(out, "\t\t<num_blocks>%llu</num_blocks>\n"
 			     "\t\t<block_size>%u</block_size>\n"
 			     "\t\t<prot_type>%d</prot_type>\n"
 			     "\t\t<prot_enable>%d</prot_enable>\n"
 			     "\t\t<raw>%s</raw>\n"
-			     , num_blocks, block_size, prot_type, prot_en, hex_encode(buf, sizeof(buf), 1));
+			     , (unsigned long long)*num_blocks, *block_size, prot_type, prot_en, hex_encode(buf, sizeof(buf), 1));
 	}
 
 	fprintf(out, "\t</capacity>\n");
@@ -110,6 +108,9 @@ static void survey_disk(const char *path)
 		goto Exit;
 	}
 
+	char largebuf[1024*1024];
+	setbuffer(out, largebuf, sizeof(largebuf));
+
 	fprintf(out, "<survey>\n"
 		     "\t<inquiry>\n"
 	             "\t\t<vendor>%s</vendor>\n"
@@ -120,10 +121,19 @@ static void survey_disk(const char *path)
 		     "\t</inquiry>\n"
 		     , vendor, model, revision, serial, hex_encode(inquiry_buf, sizeof(inquiry_buf), 1));
 
-	survey_disk_capacity(&sg, out);
+	uint64_t num_blocks;
+	uint32_t block_size;
+	survey_disk_capacity(&sg, out, &num_blocks, &block_size);
 	survey_vpds(&sg, out);
+	survey_timestamp(&sg, out);
 	survey_mode_pages(&sg, out);
 	survey_read_diagnostics(&sg, out);
+
+	// It woud be preferable to have no other IO during the read
+	// performance test, so flush the pending output buffer to keep all of
+	// the space for the next test
+	fflush(out);
+	survey_read_performance(&sg, out, num_blocks, block_size, path);
 
 Exit:
 	if (out) {
