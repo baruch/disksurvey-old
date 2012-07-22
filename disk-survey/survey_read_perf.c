@@ -15,6 +15,42 @@ typedef struct dev_stats {
 	char stats_filename[256];
 } dev_stats_t;
 
+static const char *stat_read(dev_stats_t *stats, const char *base_name, char *buf, int buf_len)
+{
+	char filename[256];
+	snprintf(filename, sizeof(filename), "%s/%s", stats->sg_dev, base_name);
+
+	FILE *f = fopen(filename, "rt");
+	if (fgets(buf, buf_len, f) == NULL) {
+		strcpy(buf, "-1");
+	}
+	fclose(f);
+
+	int len = strlen(buf);
+	if (buf[len-1] == '\n')
+		buf[len-1] = 0;
+
+	return buf;
+}
+
+static const char *stat_done(dev_stats_t *stats)
+{
+	static char buf[128];
+	return stat_read(stats, "iodone_cnt", buf, sizeof(buf));
+}
+
+static const char *stat_err(dev_stats_t *stats)
+{
+	static char buf[128];
+	return stat_read(stats, "ioerr_cnt", buf, sizeof(buf));
+}
+
+static const char *stat_request(dev_stats_t *stats)
+{
+	static char buf[128];
+	return stat_read(stats, "iorequest_cnt", buf, sizeof(buf));
+}
+
 static void sample_disk_stats(FILE *out, dev_stats_t *stats)
 {
 	char buf[8192];
@@ -34,7 +70,9 @@ static void sample_disk_stats(FILE *out, dev_stats_t *stats)
 	}
 
 	buf[ret] = 0;
-	fprintf(out, "<disk_stats_sample>%s</disk_stats_sample>\n", buf);
+	// /sys/class/scsi_generic/sg0/device iorequest_cnt iodone_cnt ioerr_cnt
+	fprintf(out, "<disk_stats_sample requests=\"%s\" done=\"%s\" err=\"%s\">%s</disk_stats_sample>\n",
+		stat_request(stats), stat_done(stats), stat_err(stats), buf);
 
 Exit:
 	close(fd);
