@@ -63,6 +63,7 @@ static inline unsigned char *ata_string(unsigned char *buf, int word_start, int 
 	int word;
 	int i;
 
+	/* Need to reverse the characters in the string as per "ATA string conventions" of ATA/ATAPI command set */
 	for (i = 0, word = word_start; word <= word_end; word++) {
 		str[i++] = buf[word*2+1];
 		str[i++] = buf[word*2];
