@@ -20,7 +20,7 @@ static inline unsigned char ata_passthrough_flags_2(int offline, int ck_cond, in
 
 static inline uint16_t ata_inq_word(unsigned char *buf, int word)
 {
-	uint16_t val = *(uint16_t *)(buf+word*2);
+	uint16_t val = (uint16_t)(buf[word*2+1])<<8 | buf[word*2];
 	return val;
 }
 
@@ -71,6 +71,12 @@ static inline unsigned char *ata_string(unsigned char *buf, int word_start, int 
 	str[i] = 0;
 
 	return str;
+}
+
+static inline uint32_t ata_longword(unsigned char *buf, int word)
+{
+	uint32_t longword = (uint32_t)ata_inq_word(buf, word+1) << 16 | ata_inq_word(buf, word);
+	return longword;
 }
 
 #include "../structs/ata_inquiry_parse.c.inc"

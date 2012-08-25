@@ -33,6 +33,9 @@ def handle_word(word):
 def handle_string(s):
 	print 'printf("%s = %%s\\n", ata_string(buf, %s, %s));' % (s.getAttribute('name'), s.getAttribute('word_start'), s.getAttribute('word_end'))
 
+def handle_longword(word):
+	print 'printf("%s = %%u\\n", ata_longword(buf, %s));' % (word.getAttribute('name'), word.getAttribute('idx'))
+
 def handle_struct(struct):
 	if struct.nodeName != 'struct':
 		print 'Unknown node', struct.nodeName
@@ -49,7 +52,7 @@ def handle_struct(struct):
 		elif node.nodeName == 'string':
 			handle_string(node)
 		elif node.nodeName == 'longword':
-			pass
+			handle_longword(node)
 		else:
 			raise 'unknown struct element %s' % node.nodeName
 
