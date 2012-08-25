@@ -1,0 +1,110 @@
+<struct name="ata_identify">
+  <word idx="0">
+    <bit name="not_ata_device" bit="15"/>
+    <bit name="response_incomplete" bit="2"/>
+  </word>
+
+  <string name="serial_number" word_start="10" word_end="19"/>
+  <string name="firmware_rev" word_start="23" word_end="26"/>
+  <string name="model" word_start="27" word_end="46"/>
+
+  <word idx="59">
+    <bit name="block_erase_supported" bit="15"/>
+    <bit name="overwrite_supported" bit="14"/>
+    <bit name="crypto_scramble_supported" bit="13"/>
+    <bit name="sanitize_supported" bit="12"/>
+  </word>
+
+  <longword idx="60" name="total_addressable_sectors_28bit"/>
+
+  <word idx="69">
+    <bit name="address_28bit_supported" bit="6"/>
+  </word>
+
+  <word idx="75">
+    <val name="queue_depth" bit_start="0" bit_end="4"/>
+  </word>
+
+  <word idx="76">
+    <bit name="ncq_priority_supported" bit="12"/>
+    <bit name="sata_phy_event_counters_log_supported" bit="10"/>
+    <bit name="ncq_feature_set_supported" bit="8"/>
+    <bit name="sata_gen3_speed" bit="3"/>
+    <bit name="sata_gen2_speed" bit="2"/>
+    <bit name="sata_gen1_speed" bit="1"/>
+  </word>
+
+  <word idx="77">
+    <bit name="ncq_queue_mgmt_supported" bit="5"/>
+    <bit name="ncq_streaming_supported" bit="4"/>
+    <val name="negotiated_sata_speed" bit_start="1" bit_end="3"/>
+  </word>
+
+  <word idx="78">
+    <bit name="ncq_autosense_supported" bit="7"/>
+    <bit name="hardware_feature_control" bit="5"/>
+    <bit name="in_order_data_delivery" bit="4"/>
+    <bit name="non_zero_buffer_offset_supported" bit="1"/>
+  </word>
+
+  <word idx="79">
+    <bit name="hardware_feature_control_enabled" bit="5"/>
+    <bit name="in_order_data_delivery_enabled" bit="4"/>
+    <bit name="non_zero_buffer_offset_enabled" bit="1"/>
+  </word>
+
+  <word idx="80">
+    <bit name="acs2_supported" bit="9"/>
+    <bit name="ata8_acs_supported" bit="8"/>
+    <bit name="ata_atapi7_supported" bit="7"/>
+    <bit name="ata_atapi6_supported" bit="6"/>
+    <bit name="ata_atapi5_supported" bit="5"/>
+  </word>
+
+  <word idx="82">
+    <bit name="read_buffer_supported" bit="13"/>
+    <bit name="write_buffer_supported" bit="12"/>
+    <bit name="smart_supported" bit="0"/>
+  </word>
+
+  <word idx="83">
+    <bit name="address_48bit_supported" bit="10"/>
+  </word>
+
+  <word idx="84">
+    <bit name="smart_self_test_supported" bit="1"/>
+    <bit name="smart_error_logging_supported" bit="0"/>
+  </word>
+
+  <word idx="85">
+    <bit name="smart_enabled" bit="0"/>
+  </word>
+
+  <word idx="119">
+    <bit name="sense_data_supported" bit="6"/>
+    <bit name="write_uncorrectable_supported" bit="2"/>
+  </word>
+  <word idx="120">
+    <bit name="sense_data_enabled" bit="6"/>
+    <bit name="write_uncorrectable_enabled" bit="2"/>
+  </word>
+
+  <word idx="206">
+    <bit name="sct_data_tables_supported" bit="5"/>
+    <bit name="sct_feature_control_supported" bit="4"/>
+    <bit name="sct_error_recovery_control_supported" bit="3"/>
+    <bit name="sct_write_same_supported" bit="2"/>
+    <bit name="sct_command_transport_supported" bit="0"/>
+  </word>
+
+  <word idx="222">
+    <val name="transport_type" bit_start="12" bit_end="15"/>
+    <bit name="sata_rev_3_1" bit="6"/>
+    <bit name="sata_rev_3_0" bit="5"/>
+    <bit name="sata_rev_2_6" bit="4"/>
+    <bit name="sata_rev_2_5" bit="3"/>
+    <bit name="sata_2_extensions" bit="2"/>
+    <bit name="sata_1_0_a" bit="1"/>
+    <bit name="ata8_ast" bit="0"/>
+  </word>
+</struct>

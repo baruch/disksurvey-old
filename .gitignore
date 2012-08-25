@@ -4,10 +4,12 @@ flags*
 *.a
 *.o
 *.xml
+*.inc
 .redo
 test/tur
 test/inq
 test/log_sense
+test/ata_identify
 disk-scrub/disk-scrub
 disk-survey/disk-survey
 tags
