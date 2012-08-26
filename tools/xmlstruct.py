@@ -41,6 +41,9 @@ def handle_struct(struct):
 		print 'Unknown node', struct.nodeName
 		return
 
+	print '#include <stdio.h>'
+	print '#include "ata.h"'
+	print '#include "%s.h"' % struct.attributes['name'].value
 	print 'void %s_parse(unsigned char *buf) {' % struct.attributes['name'].value
 
 	for node in struct.childNodes:

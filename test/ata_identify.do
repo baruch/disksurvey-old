@@ -1,3 +1,3 @@
-OBJS="ata_identify.o libtest.a ../src/libscsi.a"
-redo-ifchange ../structs/ata_inquiry_parse.c.inc $OBJS
+OBJS="ata_identify.o ata_identify_parse.o libtest.a ../src/libscsi.a"
+redo-ifchange $OBJS
 gcc $(cat ../flags) -o $3 $OBJS

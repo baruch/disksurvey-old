@@ -1,6 +1,9 @@
 #ifndef _LIBSCSI_ATA_H
 #define _LIBSCSI_ATA_H
 
+#include <stdint.h>
+#include <stdbool.h>
+
 static inline uint16_t ata_get_word(unsigned char *buf, int word)
 {
 	uint16_t val = (uint16_t)(buf[word*2+1])<<8 | buf[word*2];

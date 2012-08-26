@@ -2,6 +2,7 @@
 #include "sg.h"
 #include "ata.h"
 #include "lib.h"
+#include "ata_identify.h"
 
 #include <scsi/scsi.h>
 #include <stdio.h>
@@ -18,8 +19,6 @@ static inline unsigned char ata_passthrough_flags_2(int offline, int ck_cond, in
 {
 	return ((offline & 3) << 6) | (ck_cond&1) | ((direction_in & 1) << 3) | ((transfer_block & 1) << 2) | (len_spec & 3);
 }
-
-#include "../structs/ata_inquiry_parse.c.inc"
 
 static int inq_checksum(unsigned char *buf, int buf_len)
 {
