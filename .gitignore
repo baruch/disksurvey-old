@@ -14,3 +14,4 @@ disk-scrub/disk-scrub
 disk-survey/disk-survey
 tags
 test/ata_identify_parse.c
+disk-survey/survey_ata_identify_parser.c

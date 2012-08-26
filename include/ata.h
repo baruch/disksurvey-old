@@ -4,6 +4,18 @@
 #include <stdint.h>
 #include <stdbool.h>
 
+enum ata_passthrough_len_spec {
+	ATA_PT_LEN_SPEC_NONE         = 0,
+	ATA_PT_LEN_SPEC_FEATURES     = 1,
+	ATA_PT_LEN_SPEC_SECTOR_COUNT = 2,
+	ATA_PT_LEN_SPEC_TPSIU        = 3,
+};
+
+static inline unsigned char ata_passthrough_flags_2(int offline, int ck_cond, int direction_in, int transfer_block, enum ata_passthrough_len_spec len_spec)
+{
+	return ((offline & 3) << 6) | (ck_cond&1) | ((direction_in & 1) << 3) | ((transfer_block & 1) << 2) | (len_spec & 3);
+}
+
 static inline uint16_t ata_get_word(unsigned char *buf, int word)
 {
 	uint16_t val = (uint16_t)(buf[word*2+1])<<8 | buf[word*2];
@@ -64,5 +76,7 @@ static inline uint32_t ata_get_longword(unsigned char *buf, int word)
 	uint32_t longword = (uint32_t)ata_get_word(buf, word+1) << 16 | ata_get_word(buf, word);
 	return longword;
 }
+
+int ata_inq_checksum(unsigned char *buf, int buf_len);
 
 #endif

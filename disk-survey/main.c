@@ -19,6 +19,13 @@ static char *strtrim(char *str)
 	return str;
 }
 
+static bool disk_is_ata(scsi_vendor_t vendor)
+{
+	// According to the SCSI ATA Translating Standard, only "ATA" is expected,
+	// In fact, other responses can be seen such as "SATA", so be all encompassing.
+	return strstr(vendor, "ATA") != NULL;
+}
+
 static bool do_inquiry(sg_t *sg, scsi_vendor_t vendor, scsi_model_t model, scsi_fw_revision_t revision, scsi_serial_t serial, int *dev_type)
 {
 	unsigned char cdb[16];
@@ -128,6 +135,10 @@ static void survey_disk(const char *path)
 	survey_timestamp(&sg, out);
 	survey_mode_pages(&sg, out);
 	survey_read_diagnostics(&sg, out);
+
+	if (disk_is_ata(vendor)) {
+		survey_ata_identify(&sg, out);
+	}
 
 	// It woud be preferable to have no other IO during the read
 	// performance test, so flush the pending output buffer to keep all of

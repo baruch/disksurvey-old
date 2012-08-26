@@ -8,35 +8,6 @@
 #include <stdio.h>
 #include <memory.h>
 
-enum ata_passthrough_len_spec {
-	ATA_PT_LEN_SPEC_NONE         = 0,
-	ATA_PT_LEN_SPEC_FEATURES     = 1,
-	ATA_PT_LEN_SPEC_SECTOR_COUNT = 2,
-	ATA_PT_LEN_SPEC_TPSIU        = 3,
-};
-
-static inline unsigned char ata_passthrough_flags_2(int offline, int ck_cond, int direction_in, int transfer_block, enum ata_passthrough_len_spec len_spec)
-{
-	return ((offline & 3) << 6) | (ck_cond&1) | ((direction_in & 1) << 3) | ((transfer_block & 1) << 2) | (len_spec & 3);
-}
-
-static int inq_checksum(unsigned char *buf, int buf_len)
-{
-	char sum;
-	int idx;
-
-	if (buf[511] != 0xA5) {
-		// Checksum isn't claimed to be valid, nothing to check here
-		return 1;
-	}
-
-	for (idx = 0, sum = 0; idx < buf_len; idx++) {
-		sum += buf[idx];
-	}
-
-	return sum == 0;
-}
-
 int main(int argc, const char **argv)
 {
 	sg_t sg;
@@ -76,7 +47,7 @@ int main(int argc, const char **argv)
 
 		hexdump(buf, sizeof(buf));
 
-		if (!inq_checksum(buf, 512)) {
+		if (!ata_inq_checksum(buf, 512)) {
 			printf("checksum failed!\n");
 		} else {
 			printf("checksum passed!\n");
