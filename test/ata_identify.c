@@ -18,15 +18,15 @@ static inline unsigned char ata_passthrough_flags_2(int offline, int ck_cond, in
 	return ((offline & 3) << 6) | (ck_cond&1) | ((direction_in & 1) << 3) | ((transfer_block & 1) << 2) | (len_spec & 3);
 }
 
-static inline uint16_t ata_inq_word(unsigned char *buf, int word)
+static inline uint16_t ata_get_word(unsigned char *buf, int word)
 {
 	uint16_t val = (uint16_t)(buf[word*2+1])<<8 | buf[word*2];
 	return val;
 }
 
-static inline uint16_t ata_inq_bits(unsigned char *buf, int word, int start_bit, int end_bit)
+static inline uint16_t ata_get_bits(unsigned char *buf, int word, int start_bit, int end_bit)
 {
-	uint16_t val = ata_inq_word(buf, word);
+	uint16_t val = ata_get_word(buf, word);
 	uint16_t shift = start_bit;
 	uint16_t mask = 0;
 
@@ -52,12 +52,12 @@ static inline uint16_t ata_inq_bits(unsigned char *buf, int word, int start_bit,
 	return (val >> shift) & mask;
 }
 
-static inline uint16_t ata_inq_bit(unsigned char *buf, int word, int bit)
+static inline uint16_t ata_get_bit(unsigned char *buf, int word, int bit)
 {
-	return ata_inq_bits(buf, word, bit, bit);
+	return ata_get_bits(buf, word, bit, bit);
 }
 
-static inline unsigned char *ata_string(unsigned char *buf, int word_start, int word_end)
+static inline unsigned char *ata_get_string(unsigned char *buf, int word_start, int word_end)
 {
 	static unsigned char str[128];
 	int word;
@@ -73,9 +73,9 @@ static inline unsigned char *ata_string(unsigned char *buf, int word_start, int 
 	return str;
 }
 
-static inline uint32_t ata_longword(unsigned char *buf, int word)
+static inline uint32_t ata_get_longword(unsigned char *buf, int word)
 {
-	uint32_t longword = (uint32_t)ata_inq_word(buf, word+1) << 16 | ata_inq_word(buf, word);
+	uint32_t longword = (uint32_t)ata_get_word(buf, word+1) << 16 | ata_get_word(buf, word);
 	return longword;
 }
 

@@ -12,10 +12,10 @@ def attributes_to_tuple(attrs):
 	return t
 
 def handle_bit(word_idx, bit):
-	print 'printf("%s = %%d\\n", ata_inq_bit(buf, %s, %s));' % (bit.getAttribute('name'), word_idx, bit.getAttribute('bit'))
+	print 'printf("%s = %%d\\n", ata_get_bit(buf, %s, %s));' % (bit.getAttribute('name'), word_idx, bit.getAttribute('bit'))
 
 def handle_val(word_idx, bit):
-	print 'printf("%s = %%d\\n", ata_inq_bits(buf, %s, %s, %s));' % (bit.getAttribute('name'), word_idx, bit.getAttribute('bit_start'), bit.getAttribute('bit_end'))
+	print 'printf("%s = %%d\\n", ata_get_bits(buf, %s, %s, %s));' % (bit.getAttribute('name'), word_idx, bit.getAttribute('bit_start'), bit.getAttribute('bit_end'))
 
 def handle_word(word):
 	word_idx = word.getAttribute('idx')
@@ -31,10 +31,10 @@ def handle_word(word):
 			raise 'unknown word node'
 
 def handle_string(s):
-	print 'printf("%s = %%s\\n", ata_string(buf, %s, %s));' % (s.getAttribute('name'), s.getAttribute('word_start'), s.getAttribute('word_end'))
+	print 'printf("%s = %%s\\n", ata_get_string(buf, %s, %s));' % (s.getAttribute('name'), s.getAttribute('word_start'), s.getAttribute('word_end'))
 
 def handle_longword(word):
-	print 'printf("%s = %%u\\n", ata_longword(buf, %s));' % (word.getAttribute('name'), word.getAttribute('idx'))
+	print 'printf("%s = %%u\\n", ata_get_longword(buf, %s));' % (word.getAttribute('name'), word.getAttribute('idx'))
 
 def handle_struct(struct):
 	if struct.nodeName != 'struct':
